@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ky">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mines Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1a1b26;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      margin-bottom: 10px;
+      color: #00e676;
+    }
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      max-width: 320px;
+      width: 100%;
+      padding: 10px;
+      background: #24283b;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    .cell {
+      width: 55px;
+      height: 55px;
+      background-color: #414868;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .cell:active {
+      transform: scale(0.95);
+    }
+    .cell.open {
+      background-color: #1f2335;
+      cursor: default;
+    }
+    .cell.gem {
+      background-color: #10b981;
+    }
+    .cell.mine {
+      background-color: #ef4444;
+    }
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      background-color: #10b981;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #059669;
+    }
+    #status {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>💣 Mines Game</h1>
+  <div class="game-board" id="board"></div>
+
+  <div class="controls">
+    <button onclick="startGame()">Жаңы оюн</button>
+  </div>
+
+  <div id="status">Клетканы тандаңыз!</div>
+
+  <script>
+    const board = document.getElementById('board');
+    const statusText = document.getElementById('status');
+    const totalCells = 25;
+    const totalMines = 3;
+    let minePositions = [];
+    let gameOver = false;
+
+    function startGame() {
+      board.innerHTML = '';
+      minePositions = [];
+      gameOver = false;
+      statusText.innerText = 'Клетканы тандаңыз!';
+      statusText.style.color = '#fff
