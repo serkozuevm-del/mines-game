@@ -2,53 +2,96 @@
 <html lang="ky">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mines Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>RAW WIN - Mines</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
     body {
-      font-family: Arial, sans-serif;
-      background-color: #1a1b26;
-      color: #fff;
+      background-color: #f4f6f9;
+      color: #333;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       min-height: 100vh;
-      margin: 0;
+      padding-bottom: 70px;
     }
-    h1 {
-      margin-bottom: 10px;
-      color: #00e676;
-      font-size: 24px;
+    /* Top Header */
+    .header {
+      width: 100%;
+      background: #ffffff;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e0e6ed;
     }
-    .game-board {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      max-width: 320px;
-      width: 90%;
-      padding: 12px;
-      background: #24283b;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    .brand {
+      font-weight: 900;
+      font-size: 20px;
+      color: #1d4ed8;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
-    .cell {
-      aspect-ratio: 1;
-      background-color: #414868;
+    .balance-box {
+      background: #334155;
+      color: #fff;
+      padding: 6px 12px;
       border-radius: 8px;
       display: flex;
       align-items: center;
+      gap: 10px;
+      font-weight: bold;
+    }
+    .mode-badge {
+      background: #2563eb;
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    /* Game Container */
+    .container {
+      width: 100%;
+      max-width: 400px;
+      padding: 16px;
+    }
+
+    /* Board */
+    .board-card {
+      background: #1e293b;
+      padding: 12px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+    .cell {
+      aspect-ratio: 1;
+      background-color: #3b82f6;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 24px;
       cursor: pointer;
-      user-select: none;
-      transition: background 0.2s, transform 0.1s;
+      box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2);
+      transition: transform 0.1s, background-color 0.2s;
     }
     .cell:active {
       transform: scale(0.95);
     }
     .cell.open {
-      background-color: #1f2335;
+      background-color: #0f172a;
+      box-shadow: none;
       cursor: default;
     }
     .cell.gem {
@@ -57,90 +100,334 @@
     .cell.mine {
       background-color: #ef4444;
     }
-    .controls {
-      margin-top: 20px;
+
+    /* Multipliers */
+    .multipliers {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      margin: 15px 0;
+      padding-bottom: 4px;
     }
-    button {
-      padding: 12px 24px;
+    .mult-item {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      color: #475569;
+    }
+
+    /* Controls Panel */
+    .controls-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-top: 10px;
+    }
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .bet-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
       font-size: 16px;
       font-weight: bold;
-      color: #fff;
-      background-color: #10b981;
+      outline: none;
+    }
+    .btn-calc {
+      background: #2563eb;
+      color: white;
       border: none;
       border-radius: 8px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #059669;
-    }
-    #status {
-      margin-top: 15px;
+      width: 44px;
       font-size: 18px;
       font-weight: bold;
-      min-height: 24px;
+      cursor: pointer;
+    }
+
+    /* Quick Bet Options */
+    .quick-bets {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+    .btn-quick {
+      flex: 1;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+    }
+    .btn-quick.active {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
+    /* Bomb Selector */
+    .section-title {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .bomb-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .btn-bomb {
+      flex: 1;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      color: #334155;
+      cursor: pointer;
+    }
+    .btn-bomb.active {
+      background: #1d4ed8;
+      color: white;
+      border-color: #1d4ed8;
+    }
+
+    /* Main Action Button */
+    .btn-play {
+      width: 100%;
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+    }
+    .btn-play:active {
+      transform: scale(0.98);
+    }
+
+    /* Bottom Navigation */
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 400px;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
+      color: #64748b;
+      cursor: pointer;
+    }
+    .nav-item.active {
+      color: #2563eb;
     }
   </style>
 </head>
 <body>
 
-  <h1>💣 Mines Game</h1>
-  <div class="game-board" id="board"></div>
-
-  <div class="controls">
-    <button onclick="startGame()">Жаңы оюн</button>
+  <!-- Top Header -->
+  <div class="header">
+    <div class="brand">RAW💎WIN</div>
+    <div class="balance-box">
+      <span>💰 <span id="balanceText">10,000</span> с</span>
+      <span class="mode-badge" id="modeBadge">Демо</span>
+    </div>
   </div>
 
-  <div id="status">Клетканы тандаңыз!</div>
+  <div class="container">
+    <!-- Game Board -->
+    <div class="board-card">
+      <div class="grid" id="grid"></div>
+    </div>
+
+    <!-- Multipliers Scroll -->
+    <div class="multipliers" id="mults">
+      <div class="mult-item">🔹 x1.07</div>
+      <div class="mult-item">🔹 x1.23</div>
+      <div class="mult-item">🔹 x1.41</div>
+      <div class="mult-item">🔹 x1.64</div>
+      <div class="mult-item">🔹 x1.91</div>
+    </div>
+
+    <!-- Controls Panel -->
+    <div class="controls-card">
+      <div class="input-group">
+        <input type="number" id="betInput" class="bet-input" value="100" step="50" min="10">
+        <button class="btn-calc" onclick="adjustBet(0.5)">÷</button>
+        <button class="btn-calc" onclick="adjustBet(2)">×</button>
+      </div>
+
+      <div class="quick-bets">
+        <button class="btn-quick" onclick="addBet(50)">+50 с</button>
+        <button class="btn-quick" onclick="addBet(100)">+100 с</button>
+        <button class="btn-quick active" onclick="setMode('demo')">Демо</button>
+        <button class="btn-quick" onclick="setMode('real')">Баланс</button>
+      </div>
+
+      <div class="section-title">Бомбалардын саны:</div>
+      <div class="bomb-selector">
+        <button class="btn-bomb" onclick="selectBombs(2, this)">2</button>
+        <button class="btn-bomb active" onclick="selectBombs(3, this)">3</button>
+        <button class="btn-bomb" onclick="selectBombs(5, this)">5</button>
+        <button class="btn-bomb" onclick="selectBombs(10, this)">10</button>
+      </div>
+
+      <button class="btn-play" id="actionBtn" onclick="handleAction()">Ойноо</button>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="nav-bar">
+    <div class="nav-item active">🎮<div>Оюндар</div></div>
+    <div class="nav-item">👁️<div>Кароо</div></div>
+    <div class="nav-item">💬<div>Чат</div></div>
+    <div class="nav-item">🎁<div>Бонустар</div></div>
+    <div class="nav-item">⚙️<div>Дагы</div></div>
+  </div>
 
   <script>
-    const board = document.getElementById('board');
-    const statusText = document.getElementById('status');
-    const totalCells = 25;
-    const totalMines = 3;
+    const grid = document.getElementById('grid');
+    const betInput = document.getElementById('betInput');
+    const balanceText = document.getElementById('balanceText');
+    const actionBtn = document.getElementById('actionBtn');
+    const modeBadge = document.getElementById('modeBadge');
+
+    let balance = 10000;
+    let selectedMines = 3;
     let minePositions = [];
-    let gameOver = false;
+    let isPlaying = false;
+    let revealedSafe = 0;
+    let currentBet = 100;
 
-    function startGame() {
-      board.innerHTML = '';
-      minePositions = [];
-      gameOver = false;
-      statusText.innerText = 'Клетканы тандаңыз!';
-      statusText.style.color = '#fff';
-
-      while(minePositions.length < totalMines){
-        let r = Math.floor(Math.random() * totalCells);
-        if(!minePositions.includes(r)) minePositions.push(r);
-      }
-
-      for (let i = 0; i < totalCells; i++) {
+    function initGrid() {
+      grid.innerHTML = '';
+      for (let i = 0; i < 25; i++) {
         const cell = document.createElement('div');
         cell.classList.add('cell');
-        cell.addEventListener('click', () => revealCell(cell, i));
-        board.appendChild(cell);
+        cell.innerText = '💎';
+        cell.addEventListener('click', () => clickCell(cell, i));
+        grid.appendChild(cell);
       }
     }
 
-    function revealCell(cell, index) {
-      if (gameOver || cell.classList.contains('open')) return;
+    function selectBombs(count, el) {
+      if (isPlaying) return;
+      selectedMines = count;
+      document.querySelectorAll('.btn-bomb').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function adjustBet(factor) {
+      if (isPlaying) return;
+      let val = Math.floor(parseFloat(betInput.value) * factor);
+      betInput.value = Math.max(10, val);
+    }
+
+    function addBet(amount) {
+      if (isPlaying) return;
+      let val = (parseFloat(betInput.value) || 0) + amount;
+      betInput.value = val;
+    }
+
+    function setMode(mode) {
+      if (mode === 'demo') {
+        modeBadge.innerText = 'Демо';
+        modeBadge.style.background = '#2563eb';
+      } else {
+        modeBadge.innerText = 'Баланс';
+        modeBadge.style.background = '#10b981';
+      }
+    }
+
+    function handleAction() {
+      if (!isPlaying) {
+        // Оюнду баштоо
+        currentBet = parseFloat(betInput.value) || 100;
+        if (currentBet > balance) {
+          alert('Баланс жетишсиз!');
+          return;
+        }
+
+        balance -= currentBet;
+        balanceText.innerText = balance.toLocaleString();
+
+        isPlaying = true;
+        revealedSafe = 0;
+        actionBtn.innerText = 'Утушту алуу';
+        actionBtn.style.background = '#f59e0b';
+
+        // Миналарды жайгаштыруу
+        minePositions = [];
+        while (minePositions.length < selectedMines) {
+          let r = Math.floor(Math.random() * 25);
+          if (!minePositions.includes(r)) minePositions.push(r);
+        }
+
+        initGrid();
+      } else {
+        // Утушту алуу
+        takeWin();
+      }
+    }
+
+    function clickCell(cell, index) {
+      if (!isPlaying || cell.classList.contains('open')) return;
 
       cell.classList.add('open');
 
       if (minePositions.includes(index)) {
+        // Мина чыкты
         cell.classList.add('mine');
         cell.innerText = '💣';
-        statusText.innerText = 'Утулуп калдыңыз! 💥';
-        statusText.style.color = '#ef4444';
-        gameOver = true;
-        revealAll();
+        endGame(false);
       } else {
+        // Бриллиант чыкты
         cell.classList.add('gem');
         cell.innerText = '💎';
+        revealedSafe++;
       }
     }
 
-    function revealAll() {
-      const cells = board.children;
-      for (let i = 0; i < totalCells; i++) {
+    function takeWin() {
+      if (revealedSafe === 0) return;
+      let winAmount = Math.floor(currentBet * (1 + (revealedSafe * 0.2)));
+      balance += winAmount;
+      balanceText.innerText = balance.toLocaleString();
+      alert(`Сиз ${winAmount} сом уттуңуз! 🎉`);
+      endGame(true);
+    }
+
+    function endGame(isWin) {
+      isPlaying = false;
+      actionBtn.innerText = 'Ойноо';
+      actionBtn.style.background = '#10b981';
+
+      // Бардык бомбаларды ачуу
+      const cells = grid.children;
+      for (let i = 0; i < 25; i++) {
         if (minePositions.includes(i)) {
           cells[i].classList.add('open', 'mine');
           cells[i].innerText = '💣';
@@ -148,10 +435,7 @@
       }
     }
 
-    startGame();
+    initGrid();
   </script>
-
 </body>
 </html>
-
-      
